@@ -2,9 +2,7 @@ package com.ridehub.route.web.rest;
 
 import com.ridehub.route.broker.KafkaProducer;
 import com.ridehub.route.service.dto.RouteDTO;
-import com.ridehub.kafka.service.KafkaUtilityService;
-import com.ridehub.msroute.client.api.AddressResourceMsrouteApi;
-import com.ridehub.msroute.client.api.RouteResourceMsrouteApi;
+import com.ridehub.common.kafka.service.KafkaUtilityService;
 
 import java.util.HashMap;
 import java.util.Map;

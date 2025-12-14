@@ -1,8 +1,8 @@
 package com.ridehub.route.broker;
 
 import com.ridehub.avro.common.EventEnvelope;
-import com.ridehub.kafka.broker.GenericKafkaProducer;
-import com.ridehub.kafka.service.KafkaUtilityService;
+import com.ridehub.common.kafka.broker.GenericKafkaProducer;
+import com.ridehub.common.kafka.service.KafkaUtilityService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

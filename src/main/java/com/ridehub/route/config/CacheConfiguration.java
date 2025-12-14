@@ -12,20 +12,27 @@ import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 import org.redisson.jcache.configuration.RedissonConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.*;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+
+import com.ridehub.common.config.ConsulSSHTunnel;
+import com.ridehub.common.config.ConsulSSHTunnelAutoConfiguration;
+
 import tech.jhipster.config.JHipsterProperties;
 import tech.jhipster.config.cache.PrefixedKeyGenerator;
 
 @Configuration
 @EnableCaching
+@AutoConfigureAfter(ConsulSSHTunnelAutoConfiguration.class)
+@ConditionalOnBean(ConsulSSHTunnel.class) // Only create if tunnel bean exists
+@DependsOn("consulSSHTunnel") // Explicitly depend on the tunnel bean
 public class CacheConfiguration {
 
     private GitProperties gitProperties;

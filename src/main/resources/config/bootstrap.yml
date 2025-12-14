@@ -13,9 +13,9 @@ spring:
     active: "@spring.profiles.active@"
   cloud:
     vault:
-      uri: http://appf4s.io.vn:8200
+      uri: https://vault.appf4.io.vn
       token: f4security
-      scheme: http
+      scheme: https
       kv:
         enabled: true
         backend: secret
@@ -25,22 +25,33 @@ spring:
         infrastructure: secret/infrastructure
 
     consul:
-      host: consul.appf4s.io.vn
+      host: consul.appf4.io.vn
       port: 443
       scheme: https
+
       config:
         fail-fast: false
         format: yaml
         profile-separator: "-"
+        # Token Spring will send as X-Consul-Token header
+        acl-token: f4security
+
       discovery:
         enabled: true
         service-name: ${spring.application.name}DEV
         prefer-ip-address: true
-        ip-address: appf4s.io.vn
-        scheme: http
-        port: 8500
+        ip-address: appf4.io.vn
+
+        # Go through Nginx (https/443), not directly to Consul:8500
+        scheme: https
+        port: 443
+
+        # Same token for discovery endpoints (/v1/agent/service/register, etc.)
+        acl-token: f4security
+
         health-check-path: /management/health
         health-check-interval: 15s
+
   config:
     import: vault://secret/infrastructure,vault://secret/common-kafka
   docker:
