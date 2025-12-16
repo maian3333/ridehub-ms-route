@@ -13,8 +13,8 @@ spring:
     active: "@spring.profiles.active@"
   cloud:
     vault:
-      uri: https://vault.appf4.io.vn
-      token: f4security
+      uri: https://vault.${DOMAIN}
+      token: ${F4_PASSWORD}
       scheme: https
       kv:
         enabled: true
@@ -25,32 +25,31 @@ spring:
         infrastructure: secret/infrastructure
 
     consul:
-      host: consul.appf4.io.vn
+      enabled: true
+      host: consul.${DOMAIN}
       port: 443
       scheme: https
 
-      config:
-        fail-fast: false
-        format: yaml
-        profile-separator: "-"
-        # Token Spring will send as X-Consul-Token header
-        acl-token: f4security
+      # TLS configuration
+      tls:
+        skip-verify: true
 
+      # Consul Config (KV store)
+      config:
+        enabled: true
+        format: YAML
+        acl-token: ${F4_PASSWORD}
+
+      # Consul Discovery (service registration/discovery)
       discovery:
         enabled: true
-        service-name: ${spring.application.name}DEV
-        prefer-ip-address: true
-        ip-address: appf4.io.vn
-
-        # Go through Nginx (https/443), not directly to Consul:8500
-        scheme: https
-        port: 443
-
-        # Same token for discovery endpoints (/v1/agent/service/register, etc.)
-        acl-token: f4security
-
+        register: true
+        prefer-ip-address: false
         health-check-path: /management/health
-        health-check-interval: 15s
+        health-check-interval: 10s
+
+        acl-token: ${F4_PASSWORD}
+
 
   config:
     import: vault://secret/infrastructure,vault://secret/common-kafka
@@ -59,3 +58,10 @@ spring:
       enabled: false
       lifecycle-management: start-only
       file: src/main/docker/mysql.yml
+
+# Disable Consul health indicator to prevent ACL token errors
+# The health indicator checks Consul's status API which requires special ACL permissions
+management:
+  health:
+    consul:
+      enabled: false
