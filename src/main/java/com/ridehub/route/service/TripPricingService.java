@@ -277,15 +277,10 @@ public class TripPricingService {
      */
     public PricingTemplateDTO getPricingTemplateByTripAndSeat(Long tripId, Long seatId) {
         // Get trip and seat
-        var tripOpt = tripService.findOne(tripId);
-        var seatOpt = seatService.findOne(seatId);
-
-        if (tripOpt.isEmpty() || seatOpt.isEmpty()) {
-            throw new BadRequestAlertException("Trip or Seat not found", "msRoutePricingTemplate", "notfound");
-        }
-
-        TripDTO trip = tripOpt.get();
-        SeatDTO seat = seatOpt.get();
+        TripDTO trip = tripService.findOne(tripId)
+                .orElseThrow(() -> new BadRequestAlertException("Trip not found", "msRoutePricingTemplate", "notfound"));
+        SeatDTO seat = seatService.findOne(seatId)
+                .orElseThrow(() -> new BadRequestAlertException("Seat not found", "msRoutePricingTemplate", "notfound"));
 
         // Try to find existing pricing template
         PricingTemplateCriteria criteria = new PricingTemplateCriteria();

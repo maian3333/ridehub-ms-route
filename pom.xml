@@ -112,7 +112,7 @@
         <dependency>
             <groupId>com.ridehub.clients</groupId>
             <artifactId>client-open-feign-avro</artifactId>
-            <version>1.0.0</version>
+            <version>4.0.1</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.confluent/kafka-avro-serializer -->
         <dependency>
@@ -433,6 +433,11 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
             <scope>test</scope>
+        </dependency>
+        <!-- HTTP client for GraphHopper API -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
     </dependencies>
     <build>

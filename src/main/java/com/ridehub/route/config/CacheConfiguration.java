@@ -111,6 +111,7 @@ public class CacheConfiguration {
             createCache(cm, com.ridehub.route.domain.SeatLock.class.getName(), jcacheConfiguration);
             createCache(cm, com.ridehub.route.domain.FileRoute.class.getName(), jcacheConfiguration);
             createCache(cm, com.ridehub.route.domain.PricingTemplate.class.getName(), jcacheConfiguration);
+            createCache(cm, "distanceCalculations", jcacheConfiguration);
             // jhipster-needle-redis-add-entry
         };
     }

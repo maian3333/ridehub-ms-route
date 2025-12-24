@@ -272,4 +272,13 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  graphhopper:
+    # API key should be configured via environment variable or Vault for security
+    api-key: ${GRAPHHOPPER_API_KEY:c9257e73-8e78-4b06-9cfc-06286dc2734e}
+    base-url: https://graphhopper.com/api/1
+    connect-timeout: 5000
+    read-timeout: 10000
+    query-limit: 1000
+    vehicle-profile: car
+    locale: en

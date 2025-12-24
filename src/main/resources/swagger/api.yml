@@ -9,8 +9,186 @@ servers:
     description: Development server
   - url: https://localhost:8082/api
     description: Development server with TLS Profile
-paths: {}
+paths:
+  /distances/calculate:
+    post:
+      tags:
+        - Distance
+      summary: Calculate distance between two addresses
+      description: Calculate distance and travel time between two addresses using GraphHopper API
+      operationId: calculateDistance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistanceCalculationRequestDTO'
+      responses:
+        '200':
+          description: Distance calculation completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistanceCalculationResponseDTO'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '500':
+          $ref: '#/components/responses/Problem'
+  /distances/health:
+    get:
+      tags:
+        - Distance
+      summary: Check distance calculation service health
+      description: Check if the distance calculation service is properly configured and available
+      operationId: checkDistanceServiceHealth
+      responses:
+        '200':
+          description: Service health status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceStatusDTO'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '500':
+          $ref: '#/components/responses/Problem'
 components:
+  schemas:
+    DistanceCalculationRequestDTO:
+      type: object
+      required:
+        - originAddress
+        - destinationAddress
+        - vehicleProfile
+      properties:
+        originAddress:
+          type: string
+          maxLength: 500
+          description: Origin address for distance calculation
+          example: "Hanoi, Vietnam"
+        destinationAddress:
+          type: string
+          maxLength: 500
+          description: Destination address for distance calculation
+          example: "Ho Chi Minh City, Vietnam"
+        vehicleProfile:
+          type: string
+          enum: [CAR, FOOT, BIKE, HIKING, MOUNTAIN_BIKE, RACING_BIKE, MOTORCYCLE, BUS, TRUCK, SMALL_TRUCK, VAN, TAXI]
+          description: Vehicle profile for distance calculation
+          default: CAR
+        language:
+          type: string
+          description: Language for the response
+          default: en
+        enableElevation:
+          type: boolean
+          description: Whether to include elevation data
+          default: false
+        pointsEncoded:
+          type: boolean
+          description: Whether response points should be encoded
+          default: true
+
+    DistanceCalculationResponseDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the distance calculation request
+          example: OK
+        errorMessage:
+          type: string
+          description: Error message if the calculation failed
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistanceElement'
+        calculatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the distance was calculated
+
+    DistanceElement:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of this distance calculation element
+          example: OK
+        distance:
+          $ref: '#/components/schemas/Distance'
+        duration:
+          $ref: '#/components/schemas/Duration'
+        durationInTraffic:
+          $ref: '#/components/schemas/Duration'
+        fare:
+          $ref: '#/components/schemas/Fare'
+
+    Distance:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Human-readable distance text
+          example: "1,156 km"
+        value:
+          type: number
+          format: decimal
+          description: Distance in meters
+          example: 1156000
+
+    Duration:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Human-readable duration text
+          example: "14 hours 28 mins"
+        value:
+          type: integer
+          format: int32
+          description: Duration in seconds
+          example: 52080
+
+    Fare:
+      type: object
+      properties:
+        currency:
+          type: string
+          description: Currency code for the fare
+          example: VND
+        value:
+          type: number
+          format: decimal
+          description: Fare value in the specified currency
+          example: 1500000
+        text:
+          type: string
+          description: Human-readable fare text
+          example: "₫1,500,000"
+
+    ServiceStatusDTO:
+      type: object
+      properties:
+        service:
+          type: string
+          description: Name of the service
+          example: distance-calculation
+        status:
+          type: string
+          description: Current status of the service (UP or DOWN)
+          example: UP
+        configured:
+          type: boolean
+          description: Whether the service is properly configured
+          example: true
+        message:
+          type: string
+          description: Status message
+          example: Service is properly configured
+
   responses:
     Problem:
       description: error occurred - see status code and problem object for more information.
