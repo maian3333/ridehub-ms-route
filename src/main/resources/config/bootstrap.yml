@@ -39,7 +39,7 @@ spring:
         enabled: true
         format: YAML
         acl-token: ${F4_PASSWORD}
-
+        profile-separator: "-"
       # Consul Discovery (service registration/discovery)
       discovery:
         enabled: true
